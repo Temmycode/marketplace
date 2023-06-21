@@ -1,0 +1,1 @@
+typedef IsLoggedIn = bool;

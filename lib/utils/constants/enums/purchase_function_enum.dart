@@ -1,0 +1,4 @@
+enum PurchasePageOptions {
+  specifications,
+  reviews,
+}
