@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:marketplace/state/providers/bottom_navigation_index_provider.dart';
 import 'package:marketplace/utils/constants/app_colors_constants.dart';
@@ -11,11 +12,16 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        systemNavigationBarColor: AppColors.blackColor.withOpacity(0.9),
+      ),
+    );
     final currentIndex = ref.watch(bottomNavigationBarIndexProvider);
     return Scaffold(
       body: tabPages[currentIndex],
       bottomNavigationBar: CupertinoTabBar(
-        // backgroundColor: AppColors.blackColor.withOpacity(0.9),
+        backgroundColor: AppColors.blackColor.withOpacity(0.9),
         currentIndex: currentIndex,
         // inactiveColor: Colors.white,
         activeColor: AppColors.greenColor,

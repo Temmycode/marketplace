@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:marketplace/state/providers/is_logged_in_provider.dart';
 import 'package:marketplace/state/providers/user_id_shared_preference_provider.dart';
-import 'package:marketplace/state/providers/user_profile_provider.dart';
 import 'package:marketplace/utils/constants/app_colors_constants.dart';
 import 'package:marketplace/utils/constants/dimensions.dart';
 import 'package:marketplace/utils/constants/enums/extensions/capitalize_enum_extension.dart';
@@ -42,7 +41,6 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
     // USER ID FROM THE USER ID PROVIDER:
     final userId = ref.watch(userIdSharedPreferenceProvider);
     // PROVIDER OF THE CURRENT USER DETAILS:
-    final userProfile = ref.watch(userProfileProvider);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -192,11 +190,7 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
         ),
       ),
       drawer: DrawerContainer(
-        bio: 'A very crazy thing',
-        email: 'tolutech2004@gmail.com',
         isLoggedIn: isLoggedIn,
-        username: isLoggedIn && userId != null ? userId : '-',
-        followers: isLoggedIn ? 124 : 0,
       ),
     );
   }

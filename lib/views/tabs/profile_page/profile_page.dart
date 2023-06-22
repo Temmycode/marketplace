@@ -9,12 +9,14 @@ import 'package:marketplace/views/tabs/profile_page/tabs/personal_tab.dart';
 class ProfilePage extends ConsumerStatefulWidget {
   final String username;
   final String email;
-  final String bio;
+  final String? bio;
+  final String? profilePhoto;
   const ProfilePage({
     super.key,
     required this.username,
     required this.email,
     required this.bio,
+    required this.profilePhoto,
   });
 
   @override
@@ -73,7 +75,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
         controller: _tabController,
         children: [
           PersonalTab(
-              username: widget.username, email: widget.email, bio: widget.bio),
+            username: widget.username,
+            email: widget.email,
+          ),
           const Text('Sold items'),
           const Text('Ordered items'),
         ],

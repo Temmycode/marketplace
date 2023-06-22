@@ -11,8 +11,9 @@ final userProfileProvider = StreamProvider.autoDispose<UserModel>(
     final controller = StreamController<UserModel>();
 
     final sub = FirebaseFirestore.instance
-        .collection(FirebaseConstants.userId)
+        .collection(FirebaseConstants.userCollection)
         .where(FirebaseConstants.userId, isEqualTo: userId)
+        .limit(1)
         .snapshots()
         .listen((snapshot) {
       final doc = snapshot.docs.first;

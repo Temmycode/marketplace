@@ -33,7 +33,12 @@ class UserModel {
         'username': username,
         'bio': bio,
         'profilePhoto': profilePhoto,
+        'email': email,
       };
+
+  @override
+  String toString() =>
+      'UserModel(email: $email, userId: $userId, username: $username, bio: $bio, profilePhoto: $profilePhoto)';
 
   @override
   bool operator ==(covariant UserModel other) => (userId == other.userId &&

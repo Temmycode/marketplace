@@ -7,5 +7,9 @@ showSimpleDialog({
   required TextEditingController controller,
   required VoidCallback onOk,
 }) {
-  return ReusableDialogBox(title: title, controller: controller, onOk: onOk);
+  showDialog(
+    context: context,
+    builder: (context) =>
+        ReusableDialogBox(title: title, controller: controller, onOk: onOk),
+  );
 }

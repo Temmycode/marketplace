@@ -5,8 +5,10 @@ import 'package:marketplace/services/auth_service.dart';
 import 'package:marketplace/services/firestore_user_upload_service.dart';
 
 class AuthStateNotifier extends StateNotifier<AuthState> {
+  final Ref ref;
+
   final _authService = const AuthService();
-  AuthStateNotifier() : super(const AuthState.unkown()) {
+  AuthStateNotifier(this.ref) : super(const AuthState.unkown()) {
     if (_authService.isAlreadyLoggedIn) {
       state = AuthState(
         userId: _authService.userId,

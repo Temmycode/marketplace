@@ -17,37 +17,51 @@ class ReusableDialogBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(Dimensions.radius20),
+      ),
+      title: TitleText(
+        text: title,
+        size: Dimensions.height16,
+      ),
       children: [
-        TitleText(
-          text: title,
-          size: Dimensions.height15,
-        ),
         const SizedBox(
           height: Dimensions.height10,
         ),
-        TextField(
-          controller: controller,
-          autocorrect: true,
-          maxLines: null,
-          maxLength: 200,
-          decoration: InputDecoration(focusColor: AppColors.greenColor),
+        SimpleDialogOption(
+          child: TextField(
+            controller: controller,
+            autocorrect: true,
+            maxLines: null,
+            decoration: InputDecoration(
+                focusColor: AppColors.greenColor,
+                hintText: 'Enter your new bio'),
+          ),
         ),
         const SizedBox(
           height: Dimensions.height30,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            TextButton(
-              onPressed: onOk,
-              child: const Text('Ok'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
-            ),
-          ],
-        )
+        SimpleDialogOption(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                onPressed: onOk,
+                child: Text(
+                  'Ok',
+                  style: TextStyle(color: AppColors.greenColor),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(color: AppColors.blackColor),
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
