@@ -36,6 +36,8 @@ class Dimensions {
   static const double width20 = screenHeight / 40.8;
   static const double width40 = screenHeight / 20.4;
   static const double width60 = screenHeight / 13.6;
+  static const double width179 = screenHeight / 4.55;
+  static const double width220 = screenHeight / 3.709;
   static const double width250 = screenHeight / 3.264;
 
   // radius

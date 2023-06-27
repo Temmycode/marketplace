@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:marketplace/models/auth_result.dart';
 import 'package:marketplace/state/providers/auth_state_provider.dart';
 import 'package:marketplace/state/providers/general_providers/bio_controller_provider.dart';
+import 'package:marketplace/state/providers/general_providers/network_connection_provider.dart';
 import 'package:marketplace/state/providers/is_logged_in_provider.dart';
 import 'package:marketplace/state/providers/user_database_upload_provider.dart';
 import 'package:marketplace/state/providers/user_id_shared_preference_provider.dart';
@@ -34,6 +35,7 @@ class PersonalTab extends ConsumerWidget {
     final bioController = ref.watch(bioControllerProvider);
     final userUploadIsLoading = ref.watch(userDatabaseUploadProvider);
     final authResult = ref.watch(authStateProvider);
+    final internetConnection = ref.watch(networkConnectionProvider);
 
     return SingleChildScrollView(
       child: Container(
@@ -42,7 +44,7 @@ class PersonalTab extends ConsumerWidget {
         ),
         child: Column(
           children: [
-            userUploadIsLoading.isLoading == true
+            userUploadIsLoading.isLoading || authResult.isLoading == true
                 ? LinearProgressIndicator(
                     color: AppColors.greenColor,
                   )
@@ -60,8 +62,21 @@ class PersonalTab extends ConsumerWidget {
                           )
                         : CircleAvatar(
                             radius: Dimensions.height80,
-                            backgroundImage:
-                                NetworkImage(profile.profilePhoto!),
+                            backgroundImage: internetConnection.when(
+                              data: (theresNetwork) {
+                                if (theresNetwork) {
+                                  return NetworkImage(profile.profilePhoto!);
+                                } else {
+                                  return null;
+                                }
+                              },
+                              error: (error, stk) {
+                                throw Exception(error);
+                              },
+                              loading: () {
+                                return;
+                              },
+                            ),
                           );
                   },
                   loading: () => const CircleAvatar(
@@ -252,7 +267,7 @@ class PersonalTab extends ConsumerWidget {
               child: ListTile(
                 shape: const LinearBorder(bottom: LinearBorderEdge()),
                 leading: const SmallText(
-                  text: 'Log out',
+                  text: 'Sign out',
                   color: Colors.red,
                 ),
                 trailing: Icon(

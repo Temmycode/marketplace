@@ -5,6 +5,7 @@ import 'package:marketplace/utils/constants/dimensions.dart';
 import 'package:marketplace/utils/helpers/small_text.dart';
 import 'package:marketplace/utils/helpers/title_text.dart';
 import 'package:marketplace/views/tabs/profile_page/tabs/personal_tab.dart';
+import 'package:marketplace/views/tabs/profile_page/tabs/sold_products.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   final String username;
@@ -58,7 +59,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
             ),
             Tab(
               child: SmallText(
-                text: "SOLD",
+                text: "PRODUCTS",
                 size: 14,
               ),
             ),
@@ -78,7 +79,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
             username: widget.username,
             email: widget.email,
           ),
-          const Text('Sold items'),
+          const SoldProducts(),
           const Text('Ordered items'),
         ],
       ),

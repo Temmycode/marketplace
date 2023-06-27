@@ -1,10 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:marketplace/state/providers/bottom_navigation_index_provider.dart';
 import 'package:marketplace/utils/constants/app_colors_constants.dart';
-import 'package:marketplace/utils/constants/dimensions.dart';
 import 'package:marketplace/utils/constants/tab_pages.dart';
 
 class HomePage extends ConsumerWidget {
@@ -12,96 +9,41 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        systemNavigationBarColor: AppColors.blackColor.withOpacity(0.9),
-      ),
-    );
     final currentIndex = ref.watch(bottomNavigationBarIndexProvider);
     return Scaffold(
-      body: tabPages[currentIndex],
-      bottomNavigationBar: CupertinoTabBar(
-        backgroundColor: AppColors.blackColor.withOpacity(0.9),
-        currentIndex: currentIndex,
-        // inactiveColor: Colors.white,
-        activeColor: AppColors.greenColor,
-        onTap: (index) =>
-            ref.read(bottomNavigationBarIndexProvider.notifier).state = index,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: EdgeInsets.only(top: Dimensions.height10),
-              child: Icon(
-                Icons.home,
-                size: Dimensions.height30,
+        body: tabPages[currentIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          elevation: 10,
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: AppColors.blackColor,
+          currentIndex: currentIndex,
+          onTap: (index) =>
+              ref.read(bottomNavigationBarIndexProvider.notifier).state = index,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(
+                currentIndex == 0 ? Icons.home : Icons.home_outlined,
+                size: 35,
               ),
+              label: '',
             ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: EdgeInsets.only(top: Dimensions.height10),
-              child: Icon(
-                Icons.shopping_cart,
-                size: Dimensions.height30,
+            BottomNavigationBarItem(
+              icon: Icon(
+                currentIndex == 1
+                    ? Icons.shopping_cart
+                    : Icons.shopping_cart_outlined,
+                size: 35,
               ),
+              label: '',
             ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: EdgeInsets.only(top: Dimensions.height10),
-              child: Icon(
-                Icons.sell,
-                size: Dimensions.height30,
+            BottomNavigationBarItem(
+              icon: Icon(
+                currentIndex == 2 ? Icons.sell : Icons.sell_outlined,
+                size: 35,
               ),
+              label: '',
             ),
-            label: '',
-          ),
-        ],
-      ),
-    );
+          ],
+        ));
   }
 }
-
-// Row(
-//           mainAxisAlignment: MainAxisAlignment.spaceAround,
-//           children: [
-//             InkWell(
-//               onTap: () =>
-//                   ref.read(bottomNavigationBarIndexProvider.notifier).state = 0,
-//               child: Padding(
-//                 padding: const EdgeInsets.all(Dimensions.width10),
-//                 child: Icon(
-//                   Icons.home,
-//                   size: Dimensions.height30,
-//                   color: currentIndex == 0 ? AppColors.greenColor : Colors.grey,
-//                 ),
-//               ),
-//             ),
-//             InkWell(
-//               onTap: () =>
-//                   ref.read(bottomNavigationBarIndexProvider.notifier).state = 1,
-//               child: Padding(
-//                 padding: const EdgeInsets.all(Dimensions.width10),
-//                 child: Icon(
-//                   Icons.shopping_cart,
-//                   size: Dimensions.height30,
-//                   color: currentIndex == 1 ? AppColors.greenColor : Colors.grey,
-//                 ),
-//               ),
-//             ),
-//             InkWell(
-//               onTap: () =>
-//                   ref.read(bottomNavigationBarIndexProvider.notifier).state = 2,
-//               child: Padding(
-//                 padding: const EdgeInsets.all(Dimensions.width10),
-//                 child: Icon(
-//                   Icons.sell,
-//                   size: Dimensions.height30,
-//                   color: currentIndex == 2 ? AppColors.greenColor : Colors.grey,
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),

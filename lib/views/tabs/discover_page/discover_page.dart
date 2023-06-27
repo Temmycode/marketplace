@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:marketplace/state/providers/general_providers/network_connection_provider.dart';
 import 'package:marketplace/state/providers/is_logged_in_provider.dart';
-import 'package:marketplace/state/providers/user_id_shared_preference_provider.dart';
+import 'package:marketplace/state/providers/section_provider.dart';
 import 'package:marketplace/utils/constants/app_colors_constants.dart';
 import 'package:marketplace/utils/constants/dimensions.dart';
 import 'package:marketplace/utils/constants/enums/extensions/capitalize_enum_extension.dart';
 import 'package:marketplace/utils/constants/enums/section_enums.dart';
+import 'package:marketplace/utils/helpers/animations/no_network_animation/no_newtwork_with_text_animation.dart';
+import 'package:marketplace/utils/helpers/small_text.dart';
+import 'package:marketplace/utils/helpers/title_text.dart';
 import 'package:marketplace/views/search_product_page.dart';
 import 'package:marketplace/views/tabs/discover_page/components/tab_views/tab_views.dart';
 import 'components/app_bar.dart';
@@ -38,9 +42,8 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
   Widget build(BuildContext context) {
     // PROVIDER TO CHECK IF THE USER IS SIGNED IN:
     final isLoggedIn = ref.watch(isLoggedInProvider);
-    // USER ID FROM THE USER ID PROVIDER:
-    final userId = ref.watch(userIdSharedPreferenceProvider);
-    // PROVIDER OF THE CURRENT USER DETAILS:
+    final internetConnection = ref.watch(networkConnectionProvider);
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -136,55 +139,108 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
                 height: Dimensions.height12,
               ),
 
-              // FILTER TABBAR SECTION:
-              TabBar(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: Dimensions.width16),
-                controller: _tabController,
-                isScrollable: true,
-                labelStyle: Theme.of(context)
-                    .textTheme
-                    .titleMedium!
-                    .copyWith(fontWeight: FontWeight.w600),
-                unselectedLabelStyle: Theme.of(context)
-                    .textTheme
-                    .titleMedium!
-                    .copyWith(fontWeight: FontWeight.normal),
-                unselectedLabelColor: Colors.grey.shade400,
-                labelColor: Colors.white,
-                indicator: BoxDecoration(
-                  borderRadius: BorderRadius.circular(Dimensions.radius10),
-                  color: AppColors.greenColor,
-                ),
-                splashBorderRadius: BorderRadius.circular(Dimensions.radius10),
-                tabs: ItemSection.values
-                    .map(
-                      (item) => Tab(
-                        text: item.captializeValue(item),
-                      ),
-                    )
-                    .toList(),
-              ),
-              const SizedBox(
-                height: Dimensions.height10,
-              ),
+              internetConnection.when(
+                data: (theresNetwork) {
+                  switch (theresNetwork) {
+                    case true:
+                      return Column(
+                        children: [
+                          // FILTER TABBAR SECTION:
+                          TabBar(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: Dimensions.width16),
+                            controller: _tabController,
+                            isScrollable: true,
+                            labelStyle: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(fontWeight: FontWeight.w600),
+                            unselectedLabelStyle: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(fontWeight: FontWeight.normal),
+                            unselectedLabelColor: Colors.grey.shade400,
+                            labelColor: Colors.white,
+                            indicator: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.circular(Dimensions.radius10),
+                              color: AppColors.greenColor,
+                            ),
+                            splashBorderRadius:
+                                BorderRadius.circular(Dimensions.radius10),
+                            tabs: ItemSection.values
+                                .map(
+                                  (item) => Tab(
+                                    text: item.captializeValue(item),
+                                  ),
+                                )
+                                .toList(),
+                          ),
+                          const SizedBox(
+                            height: Dimensions.height10,
+                          ),
 
-              // TAB BAR VIEWS FOR THE ITEM SECTIONS:
-              SizedBox(
-                width: double.maxFinite,
-                height: Dimensions.height1000,
-                child: TabBarView(
-                  controller: _tabController,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: ItemSection.values
-                      .map(
-                        (item) => TabsView(
-                          itemSection: item.captializeValue(item.name),
-                        ),
-                      )
-                      .toList(),
-                ),
-              ),
+                          // TAB BAR VIEWS FOR THE ITEM SECTIONS:
+                          SizedBox(
+                            width: double.maxFinite,
+                            height: Dimensions.height1000,
+                            child: TabBarView(
+                              controller: _tabController,
+                              physics: const NeverScrollableScrollPhysics(),
+                              children: ItemSection.values.map((items) {
+                                final categoryProducts =
+                                    ref.watch(categoryProvider(items.name));
+                                return categoryProducts.when(
+                                  data: (products) {
+                                    if (products.isEmpty) {
+                                      return Container(
+                                        margin: const EdgeInsets.only(
+                                            top: Dimensions.height150),
+                                        alignment: Alignment.topCenter,
+                                        child: const SmallText(
+                                          text:
+                                              'No products available in this category yet',
+                                        ),
+                                      );
+                                    } else {
+                                      return TabsView(
+                                        itemSection: items.name,
+                                        image: products
+                                            .map((product) => product.image)
+                                            .toList(),
+                                        price: products
+                                            .map((product) => product.price)
+                                            .toList(),
+                                        productName: products
+                                            .map((product) =>
+                                                product.productName)
+                                            .toList(),
+                                        length: products.length,
+                                      );
+                                    }
+                                  },
+                                  error: (error, _) {
+                                    return const TitleText(
+                                        text: 'An error occured');
+                                  },
+                                  loading: () => const CircularProgressIndicator
+                                      .adaptive(),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ],
+                      );
+                    case false:
+                      return const NoNetworkWithTextAnimation();
+                  }
+                },
+                error: (error, stk) {
+                  // TODO: HANDLE THE ERROR
+                  return Container();
+                },
+                loading: () => const CircularProgressIndicator(),
+              )
             ],
           ),
         ),

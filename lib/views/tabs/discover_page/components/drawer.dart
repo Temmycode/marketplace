@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:marketplace/models/auth_result.dart';
 import 'package:marketplace/state/providers/auth_state_provider.dart';
+import 'package:marketplace/state/providers/general_providers/network_connection_provider.dart';
 import 'package:marketplace/state/providers/is_logged_in_provider.dart';
 import 'package:marketplace/state/providers/user_id_shared_preference_provider.dart';
 import 'package:marketplace/state/providers/user_profile_provider.dart';
@@ -29,8 +30,8 @@ class DrawerContainer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // PROVIDER TO CHECK THE AUTH STATE OF THE APPLICATION:
     final authResult = ref.watch(authStateProvider);
-    // PROVIDER FOR THE CURRENT USER DETAILS:
-
+    // PROVIDER TO CHECK IF THERE IS INTERNET CONNECTION:
+    final internetConnection = ref.watch(networkConnectionProvider);
     // A FUNCTION RETURN THE DRAWER THAT WILL BE RENDERED:
     if (isLoggedIn) {
       final userProfile = ref.watch(userProfileProvider);
@@ -59,7 +60,24 @@ class DrawerContainer extends ConsumerWidget {
                           : CircleAvatar(
                               radius: Dimensions.radius30,
                               backgroundImage:
-                                  NetworkImage(profile.profilePhoto!),
+
+                                  /// I AM CHECKING IF THERE IS INTERNET CONNECTION. IF THERE IS THEN IT WILL RETURN THE IMAGE FROM THE DATABASE
+                                  /// IF NOT THEN IT WILL JUST DISPLAY THAT RANDOM BLANK COLOR
+                                  internetConnection.when(
+                                data: (theresNetwork) {
+                                  if (theresNetwork) {
+                                    return NetworkImage(profile.profilePhoto!);
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                error: (error, stk) {
+                                  throw Exception(error);
+                                },
+                                loading: () {
+                                  return;
+                                },
+                              ),
                             ),
                       loading: () => Container(),
                       error: (e, _) => systemSnackBar(

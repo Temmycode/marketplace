@@ -14,8 +14,8 @@ class LikeButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      height: Dimensions.height40,
-      width: Dimensions.width40,
+      height: Dimensions.height30,
+      width: Dimensions.height30,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(Dimensions.radius20),
         color: outerColor,
@@ -23,6 +23,7 @@ class LikeButton extends StatelessWidget {
       child: ImageIcon(
         const AssetImage('assets/icons/favourite.png'),
         color: innerColor,
+        size: Dimensions.height16,
       ),
     );
   }

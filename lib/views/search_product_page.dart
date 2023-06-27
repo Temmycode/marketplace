@@ -1,34 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:marketplace/models/products_models.dart';
+import 'package:marketplace/state/providers/general_providers/network_connection_provider.dart';
+import 'package:marketplace/state/providers/pagination/firestore_category_provider.dart';
+import 'package:marketplace/state/providers/popular_products_provider.dart';
+import 'package:marketplace/utils/extensions/focus_keyboard_extension.dart';
+import 'package:marketplace/utils/helpers/animations/no_network_animation/no_newtwork_with_text_animation.dart';
 import 'package:marketplace/utils/helpers/small_text.dart';
 import 'package:marketplace/utils/helpers/title_text.dart';
+import 'package:marketplace/views/components/search_location_page.dart';
+import 'package:marketplace/views/tabs/see_all_popular_products_page.dart';
 import '../utils/constants/app_colors_constants.dart';
 import '../utils/constants/dimensions.dart';
 import 'components/product_container.dart';
 
-class SearchProductPage extends StatefulWidget {
+class SearchProductPage extends ConsumerWidget {
   const SearchProductPage({super.key});
-
   @override
-  State<SearchProductPage> createState() => _SearchProductPageState();
-}
-
-class _SearchProductPageState extends State<SearchProductPage> {
-  late final TextEditingController _searchController;
-  FocusNode focusNode = FocusNode();
-  @override
-  void initState() {
-    super.initState();
-    _searchController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _searchController.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // focusKeyboard();
+    final searchController = ref.watch(searchTextEditingControllerProvider);
+    final provider = ref.watch(firestoreQueryProvider);
+    final popularProducts = ref.watch(popularProductsProvider);
+    final internetConnection = ref.watch(networkConnectionProvider);
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -75,10 +69,22 @@ class _SearchProductPageState extends State<SearchProductPage> {
                     ),
                     Expanded(
                       child: TextField(
-                        focusNode: focusNode,
+                        onSubmitted: (value) async {
+                          final products =
+                              await provider.searchProducts(productName: value);
+                          final result =
+                              products.map((e) => ProductModel.fromJson(e));
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  SearchLocationPage(productName: value),
+                            ),
+                          );
+                        },
+                        // focusNode: focusNode,
                         textInputAction: TextInputAction.search,
                         textAlign: TextAlign.justify,
-                        controller: _searchController,
+                        controller: searchController,
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: 'Search',
@@ -97,46 +103,100 @@ class _SearchProductPageState extends State<SearchProductPage> {
               ),
 
               // POPULAR PRODUCTS:
-              Container(
-                margin: const EdgeInsets.only(left: Dimensions.width16),
-                alignment: Alignment.centerLeft,
-                child: const SmallText(
-                  text: 'Popular Products',
-                  weight: FontWeight.bold,
-                  size: 16,
-                ),
-              ),
-              // SEE ALL:
-              Container(
-                margin: const EdgeInsets.only(
-                    right: Dimensions.width16, bottom: Dimensions.height10),
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {},
-                  child: SmallText(
-                    color: AppColors.greenColor,
-                    text: 'See all',
-                    weight: FontWeight.normal,
-                    size: 14,
-                  ),
-                ),
-              ),
+              popularProducts.hasValue &&
+                      !popularProducts.isLoading &&
+                      !popularProducts.hasError
+                  ? Container(
+                      margin: const EdgeInsets.only(left: Dimensions.width16),
+                      alignment: Alignment.centerLeft,
+                      child: const SmallText(
+                        text: 'Popular Products',
+                        weight: FontWeight.bold,
+                        size: 16,
+                      ),
+                    )
+                  : const SizedBox(),
 
               // GRID VIEW OF THE CURRENT POPULAR ITEMS:
-              GridView.builder(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: Dimensions.width16),
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.79,
-                ),
-                itemCount: 2,
-                itemBuilder: (context, index) {
-                  return const ProductContainer();
+              internetConnection.when(
+                data: (theresNetwork) {
+                  switch (theresNetwork) {
+                    case true:
+                      return Column(
+                        children: [
+                          // SEE ALL:
+                          popularProducts.hasValue &&
+                                  !popularProducts.isLoading &&
+                                  !popularProducts.hasError
+                              ? Container(
+                                  margin: const EdgeInsets.only(
+                                      right: Dimensions.width16,
+                                      bottom: Dimensions.height10),
+                                  alignment: Alignment.centerRight,
+                                  child: TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const SeeAllPopularProductsPage(),
+                                        ),
+                                      );
+                                    },
+                                    child: SmallText(
+                                      color: AppColors.greenColor,
+                                      text: 'See all',
+                                      weight: FontWeight.normal,
+                                      size: 14,
+                                    ),
+                                  ),
+                                )
+                              : const SizedBox(),
+
+                          popularProducts.when(
+                            data: (products) {
+                              if (products.isEmpty) {
+                                return const SizedBox();
+                              } else {
+                                return GridView.builder(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: Dimensions.width16),
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    childAspectRatio: 0.79,
+                                  ),
+                                  itemCount: 2,
+                                  itemBuilder: (context, index) {
+                                    return ProductContainer(
+                                      image: products[index].image,
+                                      productName: products[index].productName,
+                                      price: products[index].price,
+                                    );
+                                  },
+                                );
+                              }
+                            },
+                            error: (error, stk) {
+                              return const SizedBox();
+                            },
+                            loading: () =>
+                                const CircularProgressIndicator.adaptive(),
+                          ),
+                        ],
+                      );
+
+                    case false:
+                      return const NoNetworkWithTextAnimation();
+                  }
                 },
-              ),
+                error: (error, stk) {
+                  // TODO: IMPLEMENT ERROR
+                  return Container();
+                },
+                loading: () => Container(),
+              )
             ],
           ),
         ),
@@ -144,3 +204,14 @@ class _SearchProductPageState extends State<SearchProductPage> {
     );
   }
 }
+
+final searchTextEditingControllerProvider =
+    Provider.autoDispose<TextEditingController>(
+  (ref) {
+    final searchTextEditingController = TextEditingController();
+    ref.onDispose(() {
+      searchTextEditingController.dispose();
+    });
+    return searchTextEditingController;
+  },
+);
