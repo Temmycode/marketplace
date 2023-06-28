@@ -22,7 +22,7 @@ class SoldProducts extends ConsumerWidget {
             itemBuilder: (context, index) {
               return SoldProductsTile(
                 name: items[index].productName,
-                image: items[index].image,
+                thumbnail: items[index].thumbnail,
                 price: items[index].price,
                 category: items[index].category,
                 stars: items[index].stars,

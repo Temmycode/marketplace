@@ -88,7 +88,7 @@ class SeeAllPopularProductsPage extends ConsumerWidget {
                         final product = products[index];
                         if (products.isNotEmpty) {
                           return ProductContainer(
-                            image: product.image,
+                            thumbnail: product.thumbnail,
                             productName: product.productName,
                             price: product.price,
                           );

@@ -170,7 +170,7 @@ class SearchProductPage extends ConsumerWidget {
                                   itemCount: 2,
                                   itemBuilder: (context, index) {
                                     return ProductContainer(
-                                      image: products[index].image,
+                                      thumbnail: products[index].thumbnail,
                                       productName: products[index].productName,
                                       price: products[index].price,
                                     );

@@ -6,13 +6,13 @@ import 'package:marketplace/utils/helpers/title_text.dart';
 import 'like_button.dart';
 
 class ProductContainer extends StatelessWidget {
-  final String image;
+  final String thumbnail;
   final String productName;
   final double price;
 
   const ProductContainer({
     super.key,
-    required this.image,
+    required this.thumbnail,
     required this.productName,
     required this.price,
   });
@@ -32,7 +32,7 @@ class ProductContainer extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: NetworkImage(image),
+                  image: NetworkImage(thumbnail),
                   fit: BoxFit.cover,
                 ),
                 borderRadius: BorderRadius.circular(Dimensions.radius20),

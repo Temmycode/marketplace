@@ -15,15 +15,29 @@ class TabsView extends ConsumerWidget {
   final String itemSection;
   final int length;
   final List<String> productName;
-  final List<String> image;
+  final List<String> thumbnail;
   final List<double> price;
+  final List<List> images;
+  final List<String> description;
+  final List<int> recommended;
+  final List<int> reviews;
+  final List<double> likePercentage;
+  final List<int> stars;
+  final List<String> category;
   const TabsView({
     super.key,
     required this.itemSection,
     required this.productName,
-    required this.image,
+    required this.thumbnail,
     required this.price,
     required this.length,
+    required this.images,
+    required this.description,
+    required this.recommended,
+    required this.reviews,
+    required this.likePercentage,
+    required this.stars,
+    required this.category,
   });
 
   @override
@@ -53,7 +67,7 @@ class TabsView extends ConsumerWidget {
                               BorderRadius.circular(Dimensions.radius20),
                           color: Colors.grey,
                           image: DecorationImage(
-                            image: NetworkImage(products[index].image),
+                            image: NetworkImage(products[index].images[0]),
                             fit: BoxFit.fitWidth,
                           ),
                         ),
@@ -146,7 +160,7 @@ class TabsView extends ConsumerWidget {
                 );
               }
             },
-            loading: () => const CircularProgressIndicator.adaptive(),
+            loading: () => Container(),
             error: (error, stk) {
               return SizedBox(
                 height: Dimensions.height150,
@@ -210,12 +224,21 @@ class TabsView extends ConsumerWidget {
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => const PurchasePage(),
+                    builder: (context) => PurchasePage(
+                      images: images[index],
+                      price: price[index],
+                      description: description[index],
+                      stars: stars[index],
+                      likePercentage: likePercentage[index],
+                      category: category[index],
+                      recommended: recommended[index],
+                      reviews: reviews[index],
+                    ),
                   ),
                 );
               },
               child: ProductContainer(
-                image: image[index],
+                thumbnail: thumbnail[index],
                 productName: productName[index],
                 price: price[index],
               ),

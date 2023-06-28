@@ -7,106 +7,87 @@ import 'package:marketplace/utils/constants/purchase_page_icons.dart';
 import 'package:marketplace/utils/helpers/expandable_text.dart';
 import 'package:marketplace/utils/helpers/small_text.dart';
 import 'package:marketplace/utils/helpers/title_text.dart';
-import 'package:slide_to_act/slide_to_act.dart';
-import 'components/purchase_item_container.dart';
-import 'components/purchase_page_tile.dart';
+import 'package:marketplace/views/tabs/purchase_page/components/purchase_item_container.dart';
+import 'package:marketplace/views/tabs/purchase_page/components/purchase_page_tile.dart';
 
 class PurchasePage extends StatelessWidget {
-  // Iterable<String> photosUrl;
+  final List images;
+  final double price;
+  final String description;
+  final int stars;
+  final double likePercentage;
+  final String category;
+  final int recommended;
+  final int reviews;
   const PurchasePage({
     super.key,
-    // required this.photosUrl,
+    required this.images,
+    required this.price,
+    required this.description,
+    required this.stars,
+    required this.likePercentage,
+    required this.category,
+    required this.recommended,
+    required this.reviews,
   });
 
   @override
   Widget build(BuildContext context) {
-    Iterable<String> photosUrl = [
-      'assets/images/phones.jpg',
-      'assets/images/ps4.jpg',
-      'assets/images/shoes.jpg',
-    ];
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            backgroundColor: AppColors.greyColor,
-            automaticallyImplyLeading: false,
-            leading: GestureDetector(
-              onTap: () => Navigator.of(context).pop(),
-              child: Icon(
-                Icons.arrow_back_ios,
-                color: AppColors.blackColor,
-              ),
-            ),
-            toolbarHeight: Dimensions.height80,
-            expandedHeight: Dimensions.height250,
-            bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(Dimensions.height20),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: Dimensions.height10),
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(Dimensions.radius10),
-                    topRight: Radius.circular(Dimensions.radius10),
-                  ),
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // IMAGES OF THE PRODUCT:
+            Stack(
               children: [
-                // IMAGES OF PRODUCT:
-                SizedBox(
-                  height: Dimensions.height60,
-                  width: Dimensions.width250,
-                  child: ListView(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    children: photosUrl
-                        .map(
-                          (photo) => PurchaseItemContainer(
-                            photoUrl: photosUrl.elementAt(0),
-                          ),
-                        )
-                        .toList(),
-                  ),
-                ),
-
-                // SHOPPING CART:
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: Dimensions.height7,
-                    horizontal: Dimensions.width7,
-                  ),
+                  width: double.maxFinite,
+                  height: Dimensions.height300,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(Dimensions.radius50),
-                    border: Border.all(
-                      color: AppColors.greyColor,
+                    borderRadius: const BorderRadius.vertical(
+                      bottom: Radius.circular(Dimensions.radius20),
+                    ),
+                    color: AppColors.greyColor,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.vertical(
+                      bottom: Radius.circular(Dimensions.radius20),
+                    ),
+                    child: PageView.builder(
+                      itemCount: images.length,
+                      itemBuilder: (context, index) {
+                        return Image.network(
+                          images[index],
+                          fit: BoxFit.cover,
+                        );
+                      },
                     ),
                   ),
-                  child: const Icon(
-                    Icons.shopping_cart_outlined,
-                    size: 20,
-                    color: Colors.black,
+                ),
+                Positioned(
+                  top: Dimensions.height60,
+                  left: Dimensions.width20,
+                  child: GestureDetector(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: Icon(
+                      Icons.arrow_back_ios,
+                      color: Colors.grey.shade600,
+                    ),
                   ),
                 ),
+                // Positioned(
+                //   child: ListView(
+                //     children: images
+                //         .map((image) => PurchaseItemContainer(photoUrl: image))
+                //         .toList(),
+                //   ),
+                // )
               ],
             ),
-            flexibleSpace: FlexibleSpaceBar(
-              background: Image.asset(
-                'assets/images/phones.jpg',
-                fit: BoxFit.cover,
-                width: double.maxFinite,
-              ),
-            ),
-          ),
 
-          // BODY SECTION:
-          SliverToBoxAdapter(
-            child: Padding(
+            // THE BODY SECTION:
+
+            Padding(
               padding: const EdgeInsets.only(
                 left: Dimensions.width10,
                 right: Dimensions.width16,
@@ -164,7 +145,7 @@ class PurchasePage extends StatelessWidget {
                           const SizedBox(
                             width: Dimensions.width5,
                           ),
-                          const Text('4.6'),
+                          Text('$stars'),
                           const SizedBox(
                             width: Dimensions.width5,
                           ),
@@ -173,7 +154,7 @@ class PurchasePage extends StatelessWidget {
                             width: Dimensions.width5,
                           ),
                           SmallText(
-                            text: '120 Reviews',
+                            text: '$reviews Reviews',
                             color: AppColors.greenColor,
                             size: 13,
                           )
@@ -192,7 +173,7 @@ class PurchasePage extends StatelessWidget {
                           const SizedBox(
                             width: Dimensions.width5,
                           ),
-                          const Text('86%'),
+                          Text('$likePercentage%'),
                           const SizedBox(
                             width: Dimensions.width5,
                           ),
@@ -201,7 +182,7 @@ class PurchasePage extends StatelessWidget {
                             width: Dimensions.width5,
                           ),
                           SmallText(
-                            text: '(102) recommend this',
+                            text: '($recommended) recommend this',
                             color: Colors.grey.shade400,
                             size: 13,
                           )
@@ -220,9 +201,9 @@ class PurchasePage extends StatelessWidget {
                         height: Dimensions.height10,
                       ),
                       // PRODUCT DESCRIPTION:
-                      const ExpandableTextWidget(
-                          text:
-                              ' The AirPods Pro is a popular wireless earbud product offered by Apple. Released in 2019, the AirPods Pro is an upgraded version of the original AirPods, featuring several notable improvements and additional features.'),
+                      ExpandableTextWidget(
+                        text: description,
+                      ),
                       const SizedBox(
                         height: Dimensions.height5,
                       ),
@@ -248,53 +229,77 @@ class PurchasePage extends StatelessWidget {
                 ],
               ),
             ),
-          )
-        ],
+          ],
+        ),
       ),
       bottomNavigationBar: Container(
-        margin: const EdgeInsets.only(bottom: Dimensions.height10),
-        padding: const EdgeInsets.symmetric(horizontal: Dimensions.width16),
-        height: Dimensions.height90,
+        margin: const EdgeInsets.only(bottom: Dimensions.height16),
+        height: kBottomNavigationBarHeight + Dimensions.height30,
         width: double.maxFinite,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.vertical(
-            top: Radius.circular(Dimensions.radius20),
-          ),
-          color: AppColors.greyColor,
-        ),
-        // color: Colors.blue,
-        alignment: Alignment.center,
-        child: SlideAction(
-          onSubmit: () {},
-          sliderButtonIcon: Icon(
-            Icons.shopping_cart,
-            color: AppColors.blackColor,
-          ),
-          sliderButtonYOffset: 0,
-          elevation: 0,
-          innerColor: AppColors.greenColor,
-          outerColor: AppColors.blackColor,
-          borderRadius: Dimensions.radius20,
-          height: Dimensions.height70,
-          child: Padding(
-            padding: const EdgeInsets.only(top: Dimensions.height5),
-            child: Column(
-              // crossAxisAlignment: CrossAxisAlignment.end,
+        padding: const EdgeInsets.symmetric(horizontal: Dimensions.width16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TitleText(
-                  text: '\$224',
-                  color: AppColors.greenColor,
+                  text: '\$$price',
+                  size: 22,
                 ),
                 const SizedBox(
                   height: Dimensions.height10,
                 ),
-                const SmallText(
-                  text: 'Add to cart',
-                  color: Colors.white24,
-                ),
+                SmallText(
+                  text: 'Delivery 2 - 7 days',
+                  color: Colors.grey.shade400,
+                  size: Dimensions.height12,
+                  weight: FontWeight.w500,
+                )
               ],
             ),
-          ),
+            Row(
+              children: [
+                GestureDetector(
+                  // TODO: ADD ITEM TO CART
+                  onTap: () {},
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: Dimensions.width15,
+                      vertical: Dimensions.height16,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(Dimensions.radius10),
+                      color: AppColors.blackColor,
+                    ),
+                    child: const SmallText(
+                      text: "Add to cart",
+                      size: Dimensions.height20,
+                      color: AppColors.whiteColor,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: Dimensions.width10,
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Dimensions.width15,
+                    vertical: Dimensions.height16,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(Dimensions.radius10),
+                    color: AppColors.greenColor,
+                  ),
+                  child: const Icon(
+                    Icons.message,
+                    color: AppColors.whiteColor,
+                  ),
+                ),
+              ],
+            )
+          ],
         ),
       ),
     );

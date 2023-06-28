@@ -105,7 +105,7 @@ class SeeMore extends ConsumerWidget {
                             final product = paginationProvider.products[index];
                             if (paginationProvider.products.isNotEmpty) {
                               return ProductContainer(
-                                image: product.image,
+                                thumbnail: product.images[0],
                                 productName: product.productName,
                                 price: product.price,
                               );

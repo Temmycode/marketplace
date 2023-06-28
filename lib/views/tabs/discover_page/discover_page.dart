@@ -8,7 +8,6 @@ import 'package:marketplace/utils/constants/dimensions.dart';
 import 'package:marketplace/utils/constants/enums/extensions/capitalize_enum_extension.dart';
 import 'package:marketplace/utils/constants/enums/section_enums.dart';
 import 'package:marketplace/utils/helpers/animations/no_network_animation/no_newtwork_with_text_animation.dart';
-import 'package:marketplace/utils/helpers/small_text.dart';
 import 'package:marketplace/utils/helpers/title_text.dart';
 import 'package:marketplace/views/search_product_page.dart';
 import 'package:marketplace/views/tabs/discover_page/components/tab_views/tab_views.dart';
@@ -190,42 +189,65 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
                               children: ItemSection.values.map((items) {
                                 final categoryProducts =
                                     ref.watch(categoryProvider(items.name));
-                                return categoryProducts.when(
-                                  data: (products) {
-                                    if (products.isEmpty) {
-                                      return Container(
-                                        margin: const EdgeInsets.only(
-                                            top: Dimensions.height150),
-                                        alignment: Alignment.topCenter,
-                                        child: const SmallText(
-                                          text:
-                                              'No products available in this category yet',
-                                        ),
-                                      );
-                                    } else {
-                                      return TabsView(
-                                        itemSection: items.name,
-                                        image: products
-                                            .map((product) => product.image)
-                                            .toList(),
-                                        price: products
-                                            .map((product) => product.price)
-                                            .toList(),
-                                        productName: products
-                                            .map((product) =>
-                                                product.productName)
-                                            .toList(),
-                                        length: products.length,
-                                      );
-                                    }
-                                  },
-                                  error: (error, _) {
-                                    return const TitleText(
-                                        text: 'An error occured');
-                                  },
-                                  loading: () => const CircularProgressIndicator
-                                      .adaptive(),
-                                );
+                                return categoryProducts.when(data: (products) {
+                                  return TabsView(
+                                    itemSection: items.name,
+                                    thumbnail: products
+                                        .map(
+                                          (product) => product.thumbnail,
+                                        )
+                                        .toList(),
+                                    price: products
+                                        .map((product) => product.price)
+                                        .toList(),
+                                    productName: products
+                                        .map((product) => product.productName)
+                                        .toList(),
+                                    length: products.length,
+                                    category: products
+                                        .map(
+                                          (product) => product.category,
+                                        )
+                                        .toList(),
+                                    description: products
+                                        .map(
+                                          (product) =>
+                                              product.productDescription,
+                                        )
+                                        .toList(),
+                                    images: products
+                                        .map(
+                                          (product) => product.images,
+                                        )
+                                        .toList(),
+                                    likePercentage: products
+                                        .map(
+                                          (product) => product.likePercentage,
+                                        )
+                                        .toList(),
+                                    recommended: products
+                                        .map(
+                                          (product) => product.recommended,
+                                        )
+                                        .toList(),
+                                    reviews: products
+                                        .map(
+                                          (product) => product.review,
+                                        )
+                                        .toList(),
+                                    stars: products
+                                        .map(
+                                          (product) => product.stars,
+                                        )
+                                        .toList(),
+                                  );
+                                }, error: (error, _) {
+                                  return const TitleText(
+                                    text: 'An error occured',
+                                  );
+                                }, loading: () {
+                                  return Container();
+                                });
                               }).toList(),
                             ),
                           ),
@@ -239,7 +261,12 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
                   // TODO: HANDLE THE ERROR
                   return Container();
                 },
-                loading: () => const CircularProgressIndicator(),
+                loading: () => const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(Dimensions.height20),
+                    child: CircularProgressIndicator.adaptive(),
+                  ),
+                ),
               )
             ],
           ),

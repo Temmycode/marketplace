@@ -95,7 +95,7 @@ class SearchLocationPage extends ConsumerWidget {
                                     if (paginationProvider
                                         .searchProducts.isNotEmpty) {
                                       return ProductContainer(
-                                        image: product.image,
+                                        thumbnail: product.thumbnail,
                                         productName: product.productName,
                                         price: product.price,
                                       );
