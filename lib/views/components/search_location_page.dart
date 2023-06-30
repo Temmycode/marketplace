@@ -7,6 +7,7 @@ import 'package:marketplace/utils/helpers/animations/no_network_animation/no_new
 import 'package:marketplace/utils/helpers/small_text.dart';
 import 'package:marketplace/utils/helpers/title_text.dart';
 import 'package:marketplace/views/components/product_container.dart';
+import 'package:marketplace/views/tabs/purchase_page/purchase_page.dart';
 
 class SearchLocationPage extends ConsumerWidget {
   final String productName;
@@ -94,10 +95,36 @@ class SearchLocationPage extends ConsumerWidget {
                                         .searchProducts[index];
                                     if (paginationProvider
                                         .searchProducts.isNotEmpty) {
-                                      return ProductContainer(
-                                        thumbnail: product.thumbnail,
-                                        productName: product.productName,
-                                        price: product.price,
+                                      return GestureDetector(
+                                        child: GestureDetector(
+                                          onTap: () =>
+                                              Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  PurchasePage(
+                                                thumbnail: product.thumbnail,
+                                                images: product.images,
+                                                price: product.price,
+                                                description:
+                                                    product.productDescription,
+                                                stars: product.stars,
+                                                likePercentage:
+                                                    product.likePercentage,
+                                                category: product.category,
+                                                recommended:
+                                                    product.recommended,
+                                                reviews: product.review,
+                                                productName:
+                                                    product.productName,
+                                              ),
+                                            ),
+                                          ),
+                                          child: ProductContainer(
+                                            thumbnail: product.thumbnail,
+                                            productName: product.productName,
+                                            price: product.price,
+                                          ),
+                                        ),
                                       );
                                     } else {
                                       return const Center(

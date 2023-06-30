@@ -9,6 +9,7 @@ import 'package:marketplace/utils/helpers/animations/no_network_animation/no_new
 import 'package:marketplace/utils/helpers/small_text.dart';
 import 'package:marketplace/utils/helpers/title_text.dart';
 import 'package:marketplace/views/components/search_location_page.dart';
+import 'package:marketplace/views/tabs/purchase_page/purchase_page.dart';
 import 'package:marketplace/views/tabs/see_all_popular_products_page.dart';
 import '../utils/constants/app_colors_constants.dart';
 import '../utils/constants/dimensions.dart';
@@ -130,8 +131,9 @@ class SearchProductPage extends ConsumerWidget {
                                   !popularProducts.hasError
                               ? Container(
                                   margin: const EdgeInsets.only(
-                                      right: Dimensions.width16,
-                                      bottom: Dimensions.height10),
+                                    right: Dimensions.width16,
+                                    bottom: Dimensions.height10,
+                                  ),
                                   alignment: Alignment.centerRight,
                                   child: TextButton(
                                     onPressed: () {
@@ -169,10 +171,34 @@ class SearchProductPage extends ConsumerWidget {
                                   ),
                                   itemCount: 2,
                                   itemBuilder: (context, index) {
-                                    return ProductContainer(
-                                      thumbnail: products[index].thumbnail,
-                                      productName: products[index].productName,
-                                      price: products[index].price,
+                                    return GestureDetector(
+                                      onTap: () => Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => PurchasePage(
+                                            thumbnail:
+                                                products[index].thumbnail,
+                                            productName:
+                                                products[index].productName,
+                                            images: products[index].images,
+                                            price: products[index].price,
+                                            description: products[index]
+                                                .productDescription,
+                                            stars: products[index].stars,
+                                            likePercentage:
+                                                products[index].likePercentage,
+                                            category: products[index].category,
+                                            recommended:
+                                                products[index].recommended,
+                                            reviews: products[index].review,
+                                          ),
+                                        ),
+                                      ),
+                                      child: ProductContainer(
+                                        thumbnail: products[index].thumbnail,
+                                        productName:
+                                            products[index].productName,
+                                        price: products[index].price,
+                                      ),
                                     );
                                   },
                                 );

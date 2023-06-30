@@ -22,7 +22,7 @@ class _LottieAnimationState extends State<LottieAnimation>
   @override
   void initState() {
     animationController = AnimationController(vsync: this);
-    animationController.duration = const Duration(seconds: 6);
+    animationController.duration = const Duration(seconds: 5);
     widget.reverse ? animationController.reverse() : null;
     widget.repeat ? animationController.repeat() : null;
     animationController.forward();

@@ -5,4 +5,5 @@ class FirebaseConstants {
   static const String userId = 'userId';
   static const String profilePhotoUpdateField = 'profilePhoto';
   static const String bioUpdateField = 'bio';
+  static const String cartCollection = 'cart';
 }

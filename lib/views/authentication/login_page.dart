@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:marketplace/models/auth_result.dart';
@@ -124,7 +126,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         email: email,
                         password: password,
                       );
-                  print(authResult.result);
                   if (authResult.result == AuthResult.success &&
                       authResult.userId != null) {
                     // SHARED PREFERNECE FOR IS LOGGED IN

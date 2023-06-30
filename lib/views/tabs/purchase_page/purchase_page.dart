@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:marketplace/models/auth_result.dart';
+import 'package:marketplace/state/providers/cart/cart_item_upload_provider.dart';
+import 'package:marketplace/state/providers/is_logged_in_provider.dart';
+import 'package:marketplace/state/providers/user_database_upload_provider.dart';
+import 'package:marketplace/state/providers/user_id_shared_preference_provider.dart';
 import 'package:marketplace/utils/constants/app_colors_constants.dart';
 import 'package:marketplace/utils/constants/dimensions.dart';
 import 'package:marketplace/utils/constants/enums/extensions/capitalize_enum_extension.dart';
@@ -6,11 +12,15 @@ import 'package:marketplace/utils/constants/enums/purchase_function_enum.dart';
 import 'package:marketplace/utils/constants/purchase_page_icons.dart';
 import 'package:marketplace/utils/helpers/expandable_text.dart';
 import 'package:marketplace/utils/helpers/small_text.dart';
+import 'package:marketplace/utils/helpers/system_snackbar.dart';
 import 'package:marketplace/utils/helpers/title_text.dart';
-import 'package:marketplace/views/tabs/purchase_page/components/purchase_item_container.dart';
+import 'package:marketplace/views/authentication/login_page.dart';
+import 'package:marketplace/views/components/show_alert_dialog.dart';
 import 'package:marketplace/views/tabs/purchase_page/components/purchase_page_tile.dart';
 
-class PurchasePage extends StatelessWidget {
+class PurchasePage extends ConsumerWidget {
+  final String productName;
+  final String thumbnail;
   final List images;
   final double price;
   final String description;
@@ -21,6 +31,8 @@ class PurchasePage extends StatelessWidget {
   final int reviews;
   const PurchasePage({
     super.key,
+    required this.productName,
+    required this.thumbnail,
     required this.images,
     required this.price,
     required this.description,
@@ -32,7 +44,16 @@ class PurchasePage extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen(cartItemUploadProvider, (_, provider) {
+      if (provider.result == AuthResult.success) {
+        systemSnackBar(context, 'Item successfully added to the Cart');
+      }
+    });
+
+    final isLoggedIn = ref.watch(isLoggedInProvider);
+    final cartUpload = ref.watch(cartItemUploadProvider);
+    final userId = ref.watch(userIdSharedPreferenceProvider);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -108,7 +129,7 @@ class PurchasePage extends StatelessWidget {
                             size: 14,
                           ),
                           TitleText(
-                            text: 'Apple Airpods Pro',
+                            text: productName,
                             color: AppColors.blackColor,
                           ),
                         ],
@@ -262,8 +283,33 @@ class PurchasePage extends StatelessWidget {
             Row(
               children: [
                 GestureDetector(
-                  // TODO: ADD ITEM TO CART
-                  onTap: () {},
+                  onTap: () async {
+                    if (isLoggedIn) {
+                      await ref
+                          .read(cartItemUploadProvider.notifier)
+                          .uploadItemToCart(
+                            userId: userId!,
+                            productPhoto: thumbnail,
+                            productId: productName,
+                            productDescription: description,
+                            price: price,
+                          );
+                    } else {
+                      showAlertDialog(
+                        context: context,
+                        title: 'Not logged in',
+                        text: "Log in to add items to your cart",
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const LoginPage(),
+                            ),
+                          );
+                        },
+                      );
+                    }
+                  },
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: Dimensions.width15,
@@ -273,8 +319,8 @@ class PurchasePage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(Dimensions.radius10),
                       color: AppColors.blackColor,
                     ),
-                    child: const SmallText(
-                      text: "Add to cart",
+                    child: SmallText(
+                      text: cartUpload.isLoading ? 'loading...' : "Add to cart",
                       size: Dimensions.height20,
                       color: AppColors.whiteColor,
                     ),

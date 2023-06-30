@@ -20,6 +20,7 @@ class Dimensions {
   static const double height200 = screenHeight / 4.08;
   static const double height250 = screenHeight / 3.2;
   static const double height300 = screenHeight / 2.72;
+  static const double height400 = screenHeight / 2.04;
   static const double height800 = screenHeight / 1.02;
   static const double height900 = screenHeight / 0.907;
   static const double height1000 = screenHeight / 0.8;

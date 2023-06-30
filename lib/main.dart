@@ -8,6 +8,7 @@ import 'package:marketplace/state/providers/auth_state_provider.dart';
 import 'package:marketplace/state/providers/general_providers/network_connection_provider.dart';
 import 'package:marketplace/utils/helpers/system_snackbar.dart';
 import 'package:marketplace/views/home_page.dart';
+import 'package:marketplace/views/tabs/cart_page/cart_page.dart';
 import 'firebase_options.dart';
 
 void main() async {

@@ -21,6 +21,7 @@ class TitleText extends StatelessWidget {
         fontSize: size != 22 ? size : 22,
         fontWeight: weight != FontWeight.w600 ? weight : FontWeight.w600,
         color: color != Colors.black ? color : Colors.black,
+        overflow: TextOverflow.ellipsis,
       ),
     );
   }

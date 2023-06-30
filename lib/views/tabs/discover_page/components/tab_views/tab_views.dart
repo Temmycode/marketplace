@@ -59,100 +59,120 @@ class TabsView extends ConsumerWidget {
                     controller: pageController,
                     itemCount: products.length,
                     itemBuilder: (context, index) {
-                      return Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: Dimensions.width6),
-                        decoration: BoxDecoration(
-                          borderRadius:
-                              BorderRadius.circular(Dimensions.radius20),
-                          color: Colors.grey,
-                          image: DecorationImage(
-                            image: NetworkImage(products[index].images[0]),
-                            fit: BoxFit.fitWidth,
+                      return GestureDetector(
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => PurchasePage(
+                              thumbnail: products[index].thumbnail,
+                              images: products[index].images,
+                              price: products[index].price,
+                              description: products[index].productDescription,
+                              stars: products[index].stars,
+                              likePercentage: products[index].likePercentage,
+                              category: products[index].category,
+                              recommended: products[index].recommended,
+                              reviews: products[index].review,
+                              productName: products[index].productName,
+                            ),
                           ),
                         ),
-                        child: Stack(
-                          children: [
-                            // TODO: THE ADVANCENMENT PRODUCT CONTAINER
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: Dimensions.width16,
-                              ),
-                              decoration: BoxDecoration(boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.greyColor.withOpacity(0.1),
-                                  offset: const Offset(0, 3),
-                                  blurRadius: 5,
-                                  spreadRadius: 5,
-                                )
-                              ]),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  SizedBox(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        SmallText(
-                                          text: 'Advancement',
-                                          color: AppColors.greenColor,
-                                          weight: FontWeight.w600,
-                                        ),
-                                        TitleText(
-                                          text: products[index].productName,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          alignment: Alignment.center,
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: Dimensions.height7,
-                                            horizontal: Dimensions.width10,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                              Dimensions.radius10,
-                                            ),
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: Dimensions.width6),
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.circular(Dimensions.radius20),
+                            color: Colors.grey,
+                            image: DecorationImage(
+                              image: NetworkImage(products[index].images[0]),
+                              fit: BoxFit.fitWidth,
+                            ),
+                          ),
+                          child: Stack(
+                            children: [
+                              // TODO: HANDLE THE LIKE BUTTON FUNCTION
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: Dimensions.width16,
+                                ),
+                                decoration: BoxDecoration(boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.greyColor.withOpacity(0.1),
+                                    offset: const Offset(0, 3),
+                                    blurRadius: 5,
+                                    spreadRadius: 5,
+                                  )
+                                ]),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    SizedBox(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          SmallText(
+                                            text: 'Advancement',
                                             color: AppColors.greenColor,
-                                          ),
-                                          child: const TitleText(
-                                            text: 'Buy',
-                                            color: AppColors.whiteColor,
                                             weight: FontWeight.w600,
                                           ),
-                                        ),
-                                        const SizedBox(
-                                          width: Dimensions.width10,
-                                        ),
-                                        TitleText(
-                                          text:
-                                              products[index].price.toString(),
-                                          size: Dimensions.height20,
-                                        )
-                                      ],
+                                          TitleText(
+                                            text: products[index].productName,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  )
-                                ],
+                                    SizedBox(
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            alignment: Alignment.center,
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: Dimensions.height7,
+                                              horizontal: Dimensions.width10,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                Dimensions.radius10,
+                                              ),
+                                              color: AppColors.greenColor,
+                                            ),
+                                            child: const TitleText(
+                                              text: 'Buy',
+                                              color: AppColors.whiteColor,
+                                              weight: FontWeight.w600,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: Dimensions.width10,
+                                          ),
+                                          TitleText(
+                                            text: products[index]
+                                                .price
+                                                .toString(),
+                                            size: Dimensions.height20,
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
 
-                            // LIKE BUTTON:
-                            const Positioned(
-                              top: Dimensions.height15,
-                              right: Dimensions.width15,
-                              child: LikeButton(
-                                innerColor: Colors.black,
-                                outerColor: Colors.white,
-                              ),
-                            )
-                          ],
+                              // LIKE BUTTON:
+                              const Positioned(
+                                top: Dimensions.height15,
+                                right: Dimensions.width15,
+                                child: LikeButton(
+                                  innerColor: Colors.black,
+                                  outerColor: Colors.white,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       );
                     },
@@ -225,6 +245,7 @@ class TabsView extends ConsumerWidget {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => PurchasePage(
+                      thumbnail: thumbnail[index],
                       images: images[index],
                       price: price[index],
                       description: description[index],
@@ -233,6 +254,7 @@ class TabsView extends ConsumerWidget {
                       category: category[index],
                       recommended: recommended[index],
                       reviews: reviews[index],
+                      productName: productName[index],
                     ),
                   ),
                 );

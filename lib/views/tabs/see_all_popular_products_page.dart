@@ -6,6 +6,8 @@ import 'package:marketplace/utils/helpers/small_text.dart';
 import 'package:marketplace/utils/helpers/title_text.dart';
 import 'package:marketplace/views/components/product_container.dart';
 
+import 'purchase_page/purchase_page.dart';
+
 class SeeAllPopularProductsPage extends ConsumerWidget {
   const SeeAllPopularProductsPage({super.key});
   @override
@@ -87,10 +89,30 @@ class SeeAllPopularProductsPage extends ConsumerWidget {
                       itemBuilder: (context, index) {
                         final product = products[index];
                         if (products.isNotEmpty) {
-                          return ProductContainer(
-                            thumbnail: product.thumbnail,
-                            productName: product.productName,
-                            price: product.price,
+                          return GestureDetector(
+                            onTap: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => PurchasePage(
+                                  thumbnail: products[index].thumbnail,
+                                  images: products[index].images,
+                                  price: products[index].price,
+                                  description:
+                                      products[index].productDescription,
+                                  stars: products[index].stars,
+                                  likePercentage:
+                                      products[index].likePercentage,
+                                  category: products[index].category,
+                                  recommended: products[index].recommended,
+                                  reviews: products[index].review,
+                                  productName: products[index].productName,
+                                ),
+                              ),
+                            ),
+                            child: ProductContainer(
+                              thumbnail: product.thumbnail,
+                              productName: product.productName,
+                              price: product.price,
+                            ),
                           );
                         } else {
                           return const Center(
