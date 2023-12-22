@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:marketplace/models/auth_result.dart';
 import 'package:marketplace/state/providers/cart/cart_item_upload_provider.dart';
 import 'package:marketplace/state/providers/is_logged_in_provider.dart';
-import 'package:marketplace/state/providers/user_database_upload_provider.dart';
 import 'package:marketplace/state/providers/user_id_shared_preference_provider.dart';
 import 'package:marketplace/utils/constants/app_colors_constants.dart';
 import 'package:marketplace/utils/constants/dimensions.dart';

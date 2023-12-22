@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:marketplace/state/providers/cart/cart_items_provider.dart';
 import 'package:marketplace/state/providers/is_logged_in_provider.dart';
-import 'package:marketplace/state/providers/user_id_shared_preference_provider.dart';
 import 'package:marketplace/utils/constants/app_colors_constants.dart';
 import 'package:marketplace/utils/constants/dimensions.dart';
 import 'package:marketplace/utils/helpers/animations/empty_cart_animation/empty_cart_animation.dart';
@@ -11,7 +10,11 @@ import 'package:marketplace/utils/helpers/title_text.dart';
 import 'package:marketplace/views/tabs/cart_page/components/cart_container.dart';
 
 class CartPage extends ConsumerWidget {
-  const CartPage({super.key});
+  final String? userId;
+  const CartPage({
+    super.key,
+    required this.userId,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -19,7 +22,6 @@ class CartPage extends ConsumerWidget {
 
     switch (isLoggedIn) {
       case true:
-        final userId = ref.watch(userIdSharedPreferenceProvider);
         final cartItems = ref.watch(cartItemsProvider(userId!));
         return Scaffold(
           body: SafeArea(
@@ -80,7 +82,9 @@ class CartPage extends ConsumerWidget {
                         }
                       },
                       error: (error, stk) => Container(),
-                      loading: () => const CircularProgressIndicator.adaptive(),
+                      loading: () => const Center(
+                        child: CircularProgressIndicator.adaptive(),
+                      ),
                     ),
 
                     const SizedBox(
